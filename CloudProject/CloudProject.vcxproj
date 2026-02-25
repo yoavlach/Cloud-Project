@@ -123,8 +123,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AddFileMessage.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="GetFileMessage.cpp" />
+    <ClCompile Include="Login.cpp" />
+    <ClCompile Include="LoginMessage.cpp" />
+    <ClCompile Include="Message.cpp" />
     <ClCompile Include="Server.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AddFileMessage.h" />
+    <ClInclude Include="GetFileMessage.h" />
+    <ClInclude Include="Login.h" />
+    <ClInclude Include="LoginMessage.h" />
+    <ClInclude Include="Message.h" />
+    <ClInclude Include="Server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

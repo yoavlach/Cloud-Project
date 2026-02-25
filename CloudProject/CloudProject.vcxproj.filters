@@ -21,5 +21,40 @@
     <ClCompile Include="Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AddFileMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GetFileMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Login.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginMessage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Message.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AddFileMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GetFileMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Login.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
