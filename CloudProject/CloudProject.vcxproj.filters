@@ -27,7 +27,7 @@
     <ClCompile Include="GetFileMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Login.cpp">
+    <ClCompile Include="UsersManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoginMessage.cpp">
@@ -42,6 +42,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UserAuth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddFileMessage.h">
@@ -50,7 +53,7 @@
     <ClInclude Include="GetFileMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Login.h">
+    <ClInclude Include="UsersManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Message.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoginMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserAuth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,10 +1,8 @@
 #include "UsersManager.h"
 
-UsersManager::UsersManager(const string& filePath)
+UsersManager::UsersManager()
 {
-	_filePath = filePath;
 	string name = DB_FILE_NAME;
-	sqlite3* DB;
 	if (!checkIfDBExists())
 	{
 		ofstream outfile(name.c_str());
@@ -25,19 +23,8 @@ bool UsersManager::searchUsername(const string& username)
 		std::cout << "SQL Error: " << messageError << "\n";
 		sqlite3_free(messageError);
 	}
-	else cout << (found ? "" : "not ") << "found" << endl;
 	return found;
 }
-
-//static int Login::sql_checkexists(void* data, int ColCount, char** ColData, char** ColName)
-//{
-//	string val = (ColName[i], ColData[i] ? ColData[i] : "NULL");
-//	if (val == "1") {
-//		return 1;
-//	}
-//	return 0;
-//}
-
 
 
 void UsersManager::getPassword(const string& username, string& passwordBuffer)
@@ -65,7 +52,20 @@ int UsersManager::passwordCallback(void* passwordBuffer, int argc, char** argv, 
 	return 0;
 }
 
-//bool UsersManager::addUser(const string& username, const string& password);
+bool UsersManager::addUser(const string& username, const string& password)
+{
+	sqlite3* DB;
+	char* messaggeError;
+	int exit = sqlite3_open("users.db", &DB);
+	string sql("INSERT INTO USERS (USERNAME, PASSWORD) VALUES('" + username + "', '" + password + "');");
+	exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messaggeError);
+	if (exit != SQLITE_OK)
+	{
+		cerr << "Error Insert" << endl;
+		sqlite3_free(messaggeError);
+	}
+	return 0;
+}
 
 bool UsersManager::checkIfDBExists()
 {
@@ -73,6 +73,7 @@ bool UsersManager::checkIfDBExists()
 	ifstream f(name.c_str());
 	return f.good();
 }
+
 int UsersManager::createDB(const char* s)
 {
 	sqlite3* DB;
@@ -108,20 +109,6 @@ int UsersManager::createTable(const char* s)
 	return 0;
 }
 
-int UsersManager::insertData(const char* s, const string& username, const string& password)
-{
-	sqlite3* DB;
-	char* messaggeError;
-	int exit = sqlite3_open("users.db", &DB);
-	string sql("INSERT INTO USERS (USERNAME, PASSWORD) VALUES('" + username + "', '" + password + "');");
-	exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &messaggeError);
-	if (exit != SQLITE_OK) 
-	{
-		cerr << "Error Insert" << endl;
-		sqlite3_free(messaggeError);
-	}
-	return 0;
-}
 int UsersManager::selectData(const char* s, const string& username)
 {
 	sqlite3* DB;

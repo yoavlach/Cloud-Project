@@ -1,13 +1,17 @@
 #include <iostream>
-#include "Login.h"
+#include "UserAuth.h"
 
 int main()
 {
-	Login l("");
-	char s;
-	//l.insertData(&s, "Yoav", "123");
-	//l.searchUsername("Yoav");
-	string password = "";
-	l.getPassword("Yoav", password);
-	cout << password << endl;
+	UserAuth ua("Yov", "13");
+	try
+	{
+		//ua.signup();
+		ua.login();
+		cout << "Successfully logged in" << endl;
+	}
+	catch (const exception& e)
+	{
+		cout << e.what() << endl;
+	}
 }
