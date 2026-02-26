@@ -20,3 +20,13 @@ void UserAuth::signup()
 	if (_userManager.searchUsername(_username)) throw exception("Username already exists");
 	_userManager.addUser(_username, _password);
 }
+
+void UserAuth::setUsername(const string& username)
+{
+	_username = username;
+}
+
+void UserAuth::setPassword(const string& password)
+{
+	_password = password;
+}
