@@ -45,6 +45,12 @@
     <ClCompile Include="UserAuth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WSAInitializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddFileMessage.h">
@@ -66,6 +72,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserAuth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WSAInitializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -127,6 +127,7 @@
     <ClCompile Include="AddFileMessage.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="GetFileMessage.cpp" />
+    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="UserAuth.cpp" />
     <ClCompile Include="UsersManager.cpp" />
     <ClCompile Include="LoginMessage.cpp" />
@@ -134,15 +135,18 @@
     <ClCompile Include="Message.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="sqlite3.c" />
+    <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AddFileMessage.h" />
     <ClInclude Include="GetFileMessage.h" />
+    <ClInclude Include="Helper.h" />
     <ClInclude Include="UserAuth.h" />
     <ClInclude Include="UsersManager.h" />
     <ClInclude Include="LoginMessage.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="WSAInitializer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

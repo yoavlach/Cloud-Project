@@ -1,4 +1,8 @@
 #include "Server.h"
+#include <WinSock2.h>
+#include <Windows.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
 
 Server::Server()
 {
@@ -49,4 +53,37 @@ void Server::acceptClient()
 void Server::clientHandler()
 {
 
+}
+
+Packet& Server::parseMsg(const string& msg)
+{
+	string msgCode = "";
+	Packet* p = new Packet;
+	int i = 0;
+	for (i = 0; i < MSG_CODE_LEN; i++)
+	{
+		msgCode += msg[i];
+	}
+	p->msgCode = stoi(msgCode);
+	getMsgPart(i, p->username);
+	getMsgPart(i, p->password);
+	getMsgPart(i, p->data);
+	return *p;
+}
+
+const string& Server::getMsgPart(int& iterator, string& buffer, const string& msg)
+{
+	string strPartLen = "";
+	int starterItVal = iterator, partLen = 0;
+	for (; iterator < starterItVal + USERNAME_AND_PASSWORD_LEN_SIZE; iterator++)
+	{
+		strPartLen += msg[iterator];
+	}
+	partLen = stoi(strPartLen);
+	starterItVal = iterator;
+	for (; iterator < starterItVal + partLen; iterator++)
+	{
+		buffer += msg[iterator];
+	}
+	return buffer;
 }
