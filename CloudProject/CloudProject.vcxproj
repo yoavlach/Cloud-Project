@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="ConnectionHandler.h" />
     <ClInclude Include="MessageHandler.h" />
+    <ClInclude Include="Packet.h" />
     <ClInclude Include="UsersManager.h" />
     <ClInclude Include="Server.h" />
     <ClInclude Include="WSAInitializer.h" />
