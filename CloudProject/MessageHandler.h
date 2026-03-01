@@ -1,27 +1,18 @@
 #pragma once
 #include "Server.h"
 #include "UsersManager.h"
+#include "ConnectionHandler.h"
 #include <fstream>
 
-
+#define MAX_CLIENT_MESSAGE_LEN 1208
 using namespace std;
-
-enum CLIENT_PACKETS {
-    LOGIN = 100,
-    SIGNUP = 200,
-    START_GET_FILE = 300,
-    FILE_DATA_RECEIVED = 301,
-    FINISHED_FILE_GETTING = 302,
-    START_FILE_SENDING = 400,
-    FILE_DATA = 401,
-    FINISHED_FILE_SENDING = 402
-};
 
 class MessageHandler
 {
 public:
     MessageHandler();
     Packet& parseMsg(const string& msg);
+    void callMsgProcessFunc(const string& msg);
     void setPacket(const Packet& p);
     void setSocket(const SOCKET& socket);
     void login();
@@ -33,4 +24,5 @@ private:
     Packet _p;
     UsersManager _usersManager;
     SOCKET _socket;
+    ConnectionHandler _connectionHandler;
 };

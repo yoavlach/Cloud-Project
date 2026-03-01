@@ -1,6 +1,6 @@
 #include "ConnectionHandler.h"
 
-void ConnectionHandler::sendMessage(char* msg)
+void ConnectionHandler::sendMessage(const char* msg)
 {
 	if (send(_socket, msg, sizeof(msg), 0) == SOCKET_ERROR)
 		throw exception("Unable to send message");

@@ -4,12 +4,10 @@
 #include <Windows.h>
 using namespace std;
 
-#define MAX_CLIENT_MESSAGE_LEN 1208
-
 class ConnectionHandler
 {
 public:
-	void sendMessage(char* msg);
+	void sendMessage(const char* msg);
 	void receiveMessage(char* buffer);
 	void setSocket(const SOCKET& socket);
 private:

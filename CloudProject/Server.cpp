@@ -51,5 +51,19 @@ void Server::acceptClient()
 
 void Server::clientHandler()
 {
-
+	bool isConnected = true;
+	char* clientMessage = new char[MAX_CLIENT_MESSAGE_LEN];
+	while (isConnected)
+	{
+		try
+		{
+			_connectionHandler.receiveMessage(clientMessage);
+			_messageHandler.callMsgProcessFunc(clientMessage);
+		}
+		catch (const exception& e)
+		{
+			isConnected = e.what() != "Connection closed by client";
+			cout << e.what() << endl;
+		}
+	}
 }
