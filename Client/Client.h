@@ -22,7 +22,6 @@ using namespace std;
 class Client
 {
 public:
-	~Client();
 	void connectToServer();
 	void login();
 	void signup();

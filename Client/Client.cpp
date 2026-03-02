@@ -1,6 +1,4 @@
 #include "Client.h"
-
-//Client::~Client();
 void Client::connectToServer()
 {
 	_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
