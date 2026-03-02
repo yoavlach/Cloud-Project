@@ -9,8 +9,6 @@ using namespace std;
 typedef struct Packet 
 {
 	int msgCode;
-	string username;
-	string password;
 	string data;
 }Packet;
 

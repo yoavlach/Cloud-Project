@@ -36,14 +36,17 @@ void MessageHandler::getFile()
 	ifstream f(_p.data.c_str());
 	bool processSuccessful = true;
 	if (!f.good())
+	{
+		_connectionHandler.sendMessage(to_string(FILE_DOES_NOT_EXIST).c_str());
 		throw exception("File doesn't exist");
+	}
 	_connectionHandler.setSocket(_socket);
 	_connectionHandler.sendMessage(msg.c_str());
 	while (getline(f, currLine) && processSuccessful)
 	{
 		if (currFileContent.length() + currLine.length() >= 999)
 		{
-			msg = to_string(FILE_DATA) + ":" + to_string(currFileContent.length()) + ":" + currFileContent;
+			msg = to_string(FILE_DATA) + to_string(currFileContent.length()) + currFileContent;
 			currFileContent = "";
 			try
 			{

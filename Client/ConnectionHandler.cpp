@@ -30,8 +30,6 @@ Packet& ConnectionHandler::parseMsg(const string& msg)
 		msgCode += msg[i];
 	}
 	p->msgCode = stoi(msgCode);
-	getMsgPart(i, p->username, msg);
-	getMsgPart(i, p->password, msg);
 	getMsgPart(i, p->data, msg);
 	return *p;
 }
