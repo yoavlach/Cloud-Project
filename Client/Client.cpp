@@ -231,12 +231,10 @@ const string& Client::extractFileName(const string& filePath)
 
 const string& Client::buildMsg(int msgCode, const string& username, const string& password, const string& data)
 {
-    string len = "";
-    string msg = to_string(msgCode) +
+    return to_string(msgCode) +
         formatLen(to_string(username.length()), 2) + username +
         formatLen(to_string(password.length()), 2) + password +
         formatLen(to_string(data.length()), 3) + data;
-    return msg;
 }
 
 const string& Client::formatLen(const string& len, int bytes)

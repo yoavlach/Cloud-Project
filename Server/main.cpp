@@ -1,8 +1,9 @@
 #include <iostream>
 #include "Server.h"
-#include "Packet.h"
 
 int main()
 {
+	Server s;
+	s.waitForClient();
 	return 0;
 }

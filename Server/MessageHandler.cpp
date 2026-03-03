@@ -31,41 +31,38 @@ void MessageHandler::signup()
 
 void MessageHandler::getFile()
 {
-	string msg = "", currFileContent = "", currLine = "";
+	string currFileContent = "", currLine = "";
 	char* clientMsg = new char[MAX_CLIENT_MESSAGE_LEN];
 	ifstream f(_p.data.c_str());
 	bool processSuccessful = true;
 	if (!f.good())
 	{
-		_connectionHandler.sendMessage(to_string(FILE_DOES_NOT_EXIST).c_str());
+		_connectionHandler.sendMessage(buildMsg(FILE_DOES_NOT_EXIST, "").c_str());
 		throw exception("File doesn't exist");
 	}
 	_connectionHandler.setSocket(_socket);
-	_connectionHandler.sendMessage(msg.c_str());
+	_connectionHandler.sendMessage(buildMsg(READY_TO_SEND_FILE, "").c_str());
 	while (getline(f, currLine) && processSuccessful)
 	{
 		if (currFileContent.length() + currLine.length() >= 999)
 		{
-			msg = to_string(FILE_DATA) + to_string(currFileContent.length()) + currFileContent;
 			currFileContent = "";
 			try
 			{
-				_connectionHandler.sendMessage(msg.c_str());
+				_connectionHandler.sendMessage(buildMsg(FILE_DATA, currFileContent).c_str());
 				_connectionHandler.receiveMessage(clientMsg);
 				_p = parseMsg(clientMsg);
 				if (_p.msgCode != FILE_DATA_RECEIVED)
 				{
 					processSuccessful = false;
-					msg = to_string(GENERAL_INVALID_MESSAGE);
-					_connectionHandler.sendMessage(msg.c_str());
+					_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 				}
 			}
 			catch (const exception& e)
 			{
 				processSuccessful = false;
 				cout << e.what() << endl;
-				msg = to_string(GENERAL_INVALID_MESSAGE);
-				_connectionHandler.sendMessage(msg.c_str());
+				_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 			}
 		}
 		currFileContent += currLine;
@@ -74,7 +71,7 @@ void MessageHandler::getFile()
 	{
 		try
 		{
-			_connectionHandler.sendMessage(to_string(FINISHED_SENDING_FILE).c_str());
+			_connectionHandler.sendMessage(buildMsg(FINISHED_SENDING_FILE, "").c_str());
 		}
 		catch (const exception& e)
 		{
@@ -82,12 +79,12 @@ void MessageHandler::getFile()
 		}
 	}
 	f.close();
-	delete clientMsg;
+	delete[] clientMsg;
 }
 
 void MessageHandler::sendFile()
 {
-	string fileContent = "", msg = "";
+	string fileContent = "";
 	char* clientMessage = new char[MAX_CLIENT_MESSAGE_LEN];
 	bool processSuccessful = true;
 	ofstream f(_p.data.c_str());
@@ -98,13 +95,12 @@ void MessageHandler::sendFile()
 		if (_p.msgCode != FILE_DATA)
 		{
 			processSuccessful = false;
-			msg = to_string(GENERAL_INVALID_MESSAGE);
-			_connectionHandler.sendMessage(msg.c_str());
+			_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 		}
 		fileContent += _p.data;
 	}
 	f << fileContent;
-	delete clientMessage;
+	delete[] clientMessage;
 }
 
 Packet& MessageHandler::parseMsg(const string& msg)
@@ -152,7 +148,20 @@ void MessageHandler::callMsgProcessFunc(const string& msg)
 		signup();
 		break;
 	default:
-		_connectionHandler.sendMessage(to_string(GENERAL_INVALID_MESSAGE).c_str());
+		_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 		break;
 	}
+}
+
+const string& MessageHandler::buildMsg(int msgCode, const string& data)
+{
+	return to_string(msgCode) + formatLen(to_string(data.length()), 3) + data;
+}
+
+const string& MessageHandler::formatLen(const string& len, int bytes)
+{
+	string formatted = "";
+	for (int i = 0; i < bytes - len.length(); i++)
+		formatted = '0' + formatted;
+	return formatted;
 }
