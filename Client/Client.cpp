@@ -1,6 +1,11 @@
 #include "Client.h"
 void Client::connectToServer()
 {
+    WSADATA wsaData;
+    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (result != 0)
+        throw exception("WSAStartup failed: " + result);
+    cout << "Winsock initialized." << std::endl;
 	_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (_socket == INVALID_SOCKET) 
     {
@@ -11,7 +16,7 @@ void Client::connectToServer()
     {
         sockaddr_in serverAddress;
         serverAddress.sin_family = AF_INET;
-        serverAddress.sin_port = htons(54000);
+        serverAddress.sin_port = htons(PORT);
         if (inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr) <= 0) 
         {
             cerr << "Invalid address/ Address not supported." << endl;
@@ -171,7 +176,7 @@ void Client::sendFile()
         }
     }
     f.close();
-    delete serverMsg;
+    delete[] serverMsg;
 }
 void Client::receiveFile()
 {
@@ -218,7 +223,7 @@ void Client::receiveFile()
     }
     if(processSuccessful)
         f << fileContent;
-    delete serverMsg;
+    delete[] serverMsg;
 }
 
 const string& Client::extractFileName(const string& filePath)
@@ -229,7 +234,7 @@ const string& Client::extractFileName(const string& filePath)
     return fileName;
 }
 
-const string& Client::buildMsg(int msgCode, const string& username, const string& password, const string& data)
+string Client::buildMsg(int msgCode, const string& username, const string& password, const string& data)
 {
     return to_string(msgCode) +
         formatLen(to_string(username.length()), 2) + username +
@@ -237,9 +242,9 @@ const string& Client::buildMsg(int msgCode, const string& username, const string
         formatLen(to_string(data.length()), 3) + data;
 }
 
-const string& Client::formatLen(const string& len, int bytes)
+string Client::formatLen(const string& len, int bytes)
 {
-    string formatted = "";
+    string formatted = len;
     for (int i = 0; i < bytes - len.length(); i++)
         formatted = '0' + formatted;
     return formatted;

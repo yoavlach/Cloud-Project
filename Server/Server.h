@@ -5,7 +5,7 @@
 #include <iostream>
 #include "MessageHandler.h"
 
-#define PORT 2424
+#define PORT 54000
 
 using namespace std;
 
@@ -18,7 +18,7 @@ public:
 	void acceptClient();
 	void clientHandler();
 private:
-	const string& getMsgPart(int& iterator, string& buffer, const string& msg);
+	string getMsgPart(int& iterator, string& buffer, const string& msg);
 	SOCKET _socket;
 	MessageHandler _messageHandler;
 	ConnectionHandler _connectionHandler;

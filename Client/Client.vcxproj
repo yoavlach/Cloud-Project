@@ -22,13 +22,11 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="ConnectionHandler.h" />
     <ClInclude Include="Packet.h" />
-    <ClInclude Include="Client.cpp" />
-    <ClInclude Include="WSAInitializer.h" />
+    <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConnectionHandler.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WSAInitializer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

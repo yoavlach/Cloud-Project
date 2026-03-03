@@ -119,7 +119,7 @@ Packet& MessageHandler::parseMsg(const string& msg)
 	return *p;
 }
 
-const string& MessageHandler::getMsgPart(int& iterator, string& buffer, const string& msg)
+string MessageHandler::getMsgPart(int& iterator, string& buffer, const string& msg)
 {
 	string strPartLen = "";
 	int starterItVal = iterator, partLen = 0;
@@ -153,12 +153,12 @@ void MessageHandler::callMsgProcessFunc(const string& msg)
 	}
 }
 
-const string& MessageHandler::buildMsg(int msgCode, const string& data)
+string MessageHandler::buildMsg(int msgCode, const string& data)
 {
 	return to_string(msgCode) + formatLen(to_string(data.length()), 3) + data;
 }
 
-const string& MessageHandler::formatLen(const string& len, int bytes)
+string MessageHandler::formatLen(const string& len, int bytes)
 {
 	string formatted = "";
 	for (int i = 0; i < bytes - len.length(); i++)

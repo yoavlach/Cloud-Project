@@ -2,18 +2,18 @@
 
 void ConnectionHandler::sendMessage(const char* msg)
 {
-	if (send(_socket, msg, sizeof(msg), 0) == SOCKET_ERROR)
-		throw exception("Unable to send message");
+	if (send(_socket, msg, strlen(msg), 0) == SOCKET_ERROR)
+		throw runtime_error("Unable to send message");
 }
 void ConnectionHandler::receiveMessage(char* buffer)
 {
-	int bytesReceived = recv(_socket, buffer, sizeof(buffer) - 1, 0);
+	int bytesReceived = recv(_socket, buffer, MAX_SERVER_MESSAGE_LEN - 1, 0);
 	if (bytesReceived > 0)
 		buffer[bytesReceived] = '\0';
 	else if (bytesReceived == 0)
-		throw exception("Connection closed by server");
+		throw runtime_error("Connection closed by server");
 	else
-		throw exception("Receive failed: " + WSAGetLastError());
+		throw runtime_error("Receive failed: " + to_string(WSAGetLastError()));
 }
 void ConnectionHandler::setSocket(const SOCKET& socket)
 {

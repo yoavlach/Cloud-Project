@@ -2,6 +2,7 @@
 #include <iostream>
 #include <WinSock2.h>
 #include <Windows.h>
+#include "Packet.h"
 using namespace std;
 
 class ConnectionHandler

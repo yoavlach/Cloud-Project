@@ -3,7 +3,15 @@
 
 int main()
 {
-	Server s;
-	s.waitForClient();
+	try
+	{
+		Server myServer;
+		myServer.waitForClient();
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "Error occured: " << e.what() << std::endl;
+	}
+	system("PAUSE");
 	return 0;
 }

@@ -20,9 +20,9 @@ public:
     void getFile();
     void sendFile();
 private:
-    const string& getMsgPart(int& iterator, string& buffer, const string& msg);
-    const string& buildMsg(int msgCode, const string& data);
-    const string& formatLen(const string& len, int bytes);
+    string getMsgPart(int& iterator, string& buffer, const string& msg);
+    string buildMsg(int msgCode, const string& data);
+    string formatLen(const string& len, int bytes);
     Packet _p;
     UsersManager _usersManager;
     SOCKET _socket;

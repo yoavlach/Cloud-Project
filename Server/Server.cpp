@@ -6,8 +6,11 @@
 
 Server::Server()
 {
-	_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (_socket == INVALID_SOCKET) throw std::exception(__FUNCTION__ " - socket");
+    WSADATA wsaData;
+    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (result != 0)
+        throw exception("WSAStartup failed with error: " + result);
+    std::cout << "Winsock initialized." << std::endl;
 }
 
 Server::~Server()
@@ -21,32 +24,46 @@ Server::~Server()
 
 void Server::waitForClient()
 {
-	struct sockaddr_in sa = { 0 };
+    _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (_socket == INVALID_SOCKET) {
+        WSACleanup();
+        throw exception("Socket creation failed with error: " + WSAGetLastError());
+    }
+    std::cout << "Server socket created." << std::endl;
 
-	sa.sin_port = htons(PORT); // port that server will listen for
-	sa.sin_family = AF_INET;   // must be AF_INET
-	sa.sin_addr.s_addr = INADDR_ANY;    // when there are few ip's for the machine. We will use always "INADDR_ANY"
+    sockaddr_in serverAddress;
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_addr.s_addr = INADDR_ANY; // Listen on all available network interfaces
+    serverAddress.sin_port = htons(PORT);      // Port number (htons converts to network byte order)
 
-	// Connects between the socket and the configuration (port and etc..)
-	if (bind(_socket, (struct sockaddr*)&sa, sizeof(sa)) == SOCKET_ERROR)
-		throw std::exception(__FUNCTION__ " - bind");
+    if (bind(_socket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
+        closesocket(_socket);
+        WSACleanup();
+        throw exception("Bind failed with error: " + WSAGetLastError());
+    }
+    std::cout << "Socket bound to port " << PORT << "." << std::endl;
 
-	// Start listening for incoming requests of clients
-	if (listen(_socket, SOMAXCONN) == SOCKET_ERROR)
-		throw std::exception(__FUNCTION__ " - listen");
-	std::cout << "Listening on port " << PORT << std::endl;
-
-	std::cout << "Waiting for client connection request" << std::endl;
-	acceptClient();
+    if (listen(_socket, SOMAXCONN) == SOCKET_ERROR) {
+        closesocket(_socket);
+        WSACleanup();
+        throw exception("Listen failed with error: " + WSAGetLastError());
+    }
+    std::cout << "Listening for incoming connections..." << std::endl;
+    acceptClient();
 }
 void Server::acceptClient()
 {
-	SOCKET client_socket = accept(_socket, NULL, NULL);
-	if (client_socket == INVALID_SOCKET)
-		throw std::exception(__FUNCTION__);
-	std::cout << "Client accepted. Server and client can speak" << std::endl;
-	// the function that handle the conversation with the client
-	clientHandler();
+    sockaddr_in clientAddress;
+    int clientSize = sizeof(clientAddress);
+    SOCKET clientSocket = accept(_socket, (sockaddr*)&clientAddress, &clientSize);
+
+    if (clientSocket == INVALID_SOCKET) {
+        closesocket(_socket);
+        WSACleanup();
+        throw exception("Accept failed with error: " + WSAGetLastError());
+    }
+    std::cout << "Client connected!" << std::endl;
+    clientHandler();
 }
 
 void Server::clientHandler()
