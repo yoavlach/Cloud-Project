@@ -26,7 +26,7 @@ public:
 	void sendFile();
 	void receiveFile();
 private:
-	const string& extractFileName(const string& filePath);
+	string extractFileName(const string& filePath);
 	string buildMsg(int msgCode, const string& username, const string& password, const string& data);
 	string formatLen(const string& len, int bytes);
 	ConnectionHandler _connectionHandler;

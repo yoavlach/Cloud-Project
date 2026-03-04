@@ -20,9 +20,10 @@ public:
     void getFile();
     void sendFile();
 private:
-    string getMsgPart(int& iterator, string& buffer, const string& msg);
+    string getMsgPart(int& iterator, string& buffer, const string& msg, int lenSize);
     string buildMsg(int msgCode, const string& data);
     string formatLen(const string& len, int bytes);
+    bool checkFileExists(const string& fileName);
     Packet _p;
     UsersManager _usersManager;
     SOCKET _socket;

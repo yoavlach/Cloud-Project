@@ -102,17 +102,22 @@ void MessageHandler::sendFile()
 	string fileContent = "";
 	char* clientMessage = new char[MAX_CLIENT_MESSAGE_LEN];
 	bool processSuccessful = true;
+	_connectionHandler.sendMessage(buildMsg(READY_TO_RECEIVE_FILE, "").c_str());
 	ofstream f(_p.data.c_str());
 	while (_p.msgCode != FINISHED_SENDING_FILE && processSuccessful)
 	{
 		_connectionHandler.receiveMessage(clientMessage);
 		_p = parseMsg(clientMessage);
-		if (_p.msgCode != FILE_DATA)
+		if(_p.msgCode == FILE_DATA)
+		{
+			_connectionHandler.sendMessage(buildMsg(FILE_DATA_RECEIVED, "").c_str());
+			fileContent += _p.data;
+		}
+		else if (_p.msgCode != FINISHED_SENDING_FILE)
 		{
 			processSuccessful = false;
 			_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 		}
-		fileContent += _p.data;
 	}
 	f << fileContent;
 	delete[] clientMessage;
@@ -128,17 +133,17 @@ Packet& MessageHandler::parseMsg(const string& msg)
 		msgCode += msg[i];
 	}
 	p->msgCode = stoi(msgCode);
-	getMsgPart(i, p->username, msg);
-	getMsgPart(i, p->password, msg);
-	getMsgPart(i, p->data, msg);
+	getMsgPart(i, p->username, msg, USERNAME_AND_PASSWORD_LEN_SIZE);
+	getMsgPart(i, p->password, msg, USERNAME_AND_PASSWORD_LEN_SIZE);
+	getMsgPart(i, p->data, msg, DATA_LEN_SIZE);
 	return *p;
 }
 
-string MessageHandler::getMsgPart(int& iterator, string& buffer, const string& msg)
+string MessageHandler::getMsgPart(int& iterator, string& buffer, const string& msg, int lenSize)
 {
 	string strPartLen = "";
 	int starterItVal = iterator, partLen = 0;
-	for (; iterator < starterItVal + USERNAME_AND_PASSWORD_LEN_SIZE; iterator++)
+	for (; iterator < starterItVal + lenSize; iterator++)
 	{
 		strPartLen += msg[iterator];
 	}
@@ -162,6 +167,12 @@ void MessageHandler::callMsgProcessFunc(const string& msg)
 	case SIGNUP:
 		signup();
 		break;
+	case READY_TO_SEND_FILE:
+		sendFile();
+		break;
+	case READY_TO_RECEIVE_FILE:
+		getFile();
+		break;
 	default:
 		_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 		break;
@@ -179,4 +190,13 @@ string MessageHandler::formatLen(const string& len, int bytes)
 	for (int i = 0; i < bytes - len.length(); i++)
 		formatted = '0' + formatted;
 	return formatted;
+}
+
+bool MessageHandler::checkFileExists(const string& fileName)
+{
+	bool exists = true;
+	ifstream f(fileName);
+	exists = f.good();
+	f.close();
+	return exists;
 }

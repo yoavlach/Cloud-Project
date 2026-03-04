@@ -4,6 +4,7 @@ using namespace std;
 
 #define MSG_CODE_LEN 3
 #define USERNAME_AND_PASSWORD_LEN_SIZE 2
+#define DATA_LEN_SIZE 3
 #define MAX_CLIENT_MESSAGE_LEN 1208
 
 typedef struct Packet 

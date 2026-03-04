@@ -119,7 +119,7 @@ void Client::signup()
 }
 void Client::sendFile()
 {
-    string path = "", currLine = "", currFileContent = "", msg = "", fileName = "";
+    string path = "", currLine = "", currFileContent = "", fileName = "";
     char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
     bool processSuccessful = false;
     ifstream f;
@@ -136,6 +136,10 @@ void Client::sendFile()
     try
     {
         _connectionHandler.sendMessage(buildMsg(READY_TO_SEND_FILE, "", "", fileName).c_str());
+        _connectionHandler.receiveMessage(serverMsg);
+        _p = _connectionHandler.parseMsg(serverMsg);
+        if (_p.msgCode != READY_TO_RECEIVE_FILE)
+            cout << "Error\nPlese try again" << endl;
     }
     catch (const exception& e)
     {
@@ -143,12 +147,12 @@ void Client::sendFile()
     }
     while (getline(f, currLine) && processSuccessful)
     {
-        if (currFileContent.length() + currLine.length() >= 999)
+        currLine += "\n";
+        if (currLine.length() <= 999)
         {
-            msg = to_string(FILE_DATA) + to_string(currFileContent.length()) + currFileContent;
             try
             {
-                _connectionHandler.sendMessage(msg.c_str());
+                _connectionHandler.sendMessage(buildMsg(FILE_DATA, "", "", currLine).c_str());
                 _connectionHandler.receiveMessage(serverMsg);
                 _p = _connectionHandler.parseMsg(serverMsg);
                 processSuccessful = _p.msgCode == FILE_DATA_RECEIVED;
@@ -164,7 +168,7 @@ void Client::sendFile()
     {
         try
         {
-            _connectionHandler.sendMessage(to_string(FINISHED_SENDING_FILE).c_str());
+            _connectionHandler.sendMessage(buildMsg(FINISHED_SENDING_FILE, "", "", "").c_str());
         }
         catch (const exception& e)
         {
@@ -222,7 +226,7 @@ void Client::receiveFile()
     delete[] serverMsg;
 }
 
-const string& Client::extractFileName(const string& filePath)
+string Client::extractFileName(const string& filePath)
 {
     string fileName = "";
     for (auto i : filePath)
