@@ -14,6 +14,7 @@ void MessageHandler::setPacket(const Packet& p)
 void MessageHandler::setSocket(const SOCKET& socket)
 {
 	_socket = socket;
+	_connectionHandler.setSocket(socket);
 }
 
 void MessageHandler::login()

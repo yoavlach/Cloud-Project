@@ -85,7 +85,7 @@ void Client::login()
 }
 void Client::signup()
 {
-    string username = "", password = "", msg = "";
+    string username = "", password = "";
     char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
     char* chMsg = nullptr;
     bool connected = false;
@@ -98,9 +98,7 @@ void Client::signup()
             cout << "Enter password: ";
             cin >> password;
             _connectionHandler.sendMessage(buildMsg(SIGNUP, username, password, "").c_str());
-            chMsg = new char[msg.length()];
-            for (int i = 0; i < msg.length(); i++)
-                chMsg[i] = msg[i];
+            chMsg = new char[MAX_SERVER_MESSAGE_LEN];
             _connectionHandler.receiveMessage(chMsg);
             _p = _connectionHandler.parseMsg(chMsg);
             delete[] chMsg;
