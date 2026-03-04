@@ -19,14 +19,15 @@ void Client::connectToServer()
         serverAddress.sin_port = htons(PORT);
         if (inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr) <= 0) 
         {
-            cerr << "Invalid address/ Address not supported." << endl;
             closesocket(_socket);
             WSACleanup();
+            throw exception("Invalid address/ Address not supported.");
         }
-        else if (connect(_socket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
-            cerr << "Connection to server failed: " << WSAGetLastError() << endl;
+        else if (connect(_socket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) 
+        {
             closesocket(_socket);
             WSACleanup();
+            throw exception("Connection to server failed");
         }
         else
         {

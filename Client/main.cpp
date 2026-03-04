@@ -7,39 +7,51 @@ enum OPTIONS { LOGIN_OPT = 1, SIGNUP_OPT, SEND_FILE_OPT, RECEIVE_FILE_OPT, EXIT_
 int main()
 {	
 	Client c;
+	bool connected = false;
 	int action = 0;
-	c.connectToServer();
-	do
+	try
 	{
-		cout << "Choose action:\n1) Login\n2) Sign up\nYour choice: ";
-		cin >> action;
-	} while (action != LOGIN_OPT && action != SIGNUP_OPT);
-	switch (action)
-	{
-	case LOGIN_OPT:
-		c.login();
-		break;
-	case SIGNUP_OPT:
-		c.signup();
-		break;
+		c.connectToServer();
+		connected = true;
 	}
-	do
+	catch (const exception& e)
+	{
+		cout << e.what();
+	}
+	if (connected)
 	{
 		do
 		{
-			cout << "Choose action\n3) Send file\n4) Receive file\n5) Exit\nYour choice: ";
+			cout << "Choose action:\n1) Login\n2) Sign up\nYour choice: ";
 			cin >> action;
-		} while (action > SEND_FILE_OPT || action > EXIT_OPT);
+		} while (action != LOGIN_OPT && action != SIGNUP_OPT);
 		switch (action)
 		{
-		case SEND_FILE_OPT:
-			c.sendFile();
+		case LOGIN_OPT:
+			c.login();
 			break;
-		case RECEIVE_FILE_OPT:
-			c.receiveFile();
+		case SIGNUP_OPT:
+			c.signup();
 			break;
 		}
-	} while (action != EXIT_OPT);
-	cout << "Goodbye!";
+		do
+		{
+			do
+			{
+				cout << "Choose action\n3) Send file\n4) Receive file\n5) Exit\nYour choice: ";
+				cin >> action;
+			} while (action > SEND_FILE_OPT || action > EXIT_OPT);
+			switch (action)
+			{
+			case SEND_FILE_OPT:
+				c.sendFile();
+				break;
+			case RECEIVE_FILE_OPT:
+				c.receiveFile();
+				break;
+			}
+		} while (action != EXIT_OPT);
+		cout << "Goodbye!";
+	}
 	return 0;
 }

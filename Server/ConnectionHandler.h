@@ -12,5 +12,7 @@ public:
 	void receiveMessage(char* buffer);
 	void setSocket(const SOCKET& socket);
 private:
+	void sendAll(const char* data, int length);
+	void receiveAll(char* buffer, int length);
 	SOCKET _socket;
 };

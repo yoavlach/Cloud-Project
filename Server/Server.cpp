@@ -55,14 +55,15 @@ void Server::acceptClient()
 {
     sockaddr_in clientAddress;
     int clientSize = sizeof(clientAddress);
-    SOCKET clientSocket = accept(_socket, (sockaddr*)&clientAddress, &clientSize);
+    _socket = accept(_socket, (sockaddr*)&clientAddress, &clientSize);
 
-    if (clientSocket == INVALID_SOCKET) {
+    if (_socket == INVALID_SOCKET) {
         closesocket(_socket);
         WSACleanup();
         throw exception("Accept failed with error: " + WSAGetLastError());
     }
     std::cout << "Client connected!" << std::endl;
+    _connectionHandler.setSocket(_socket);
     clientHandler();
 }
 

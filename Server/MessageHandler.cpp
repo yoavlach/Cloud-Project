@@ -19,14 +19,28 @@ void MessageHandler::setSocket(const SOCKET& socket)
 void MessageHandler::login()
 {
 	string passwordBuffer = "";
-	if (!_usersManager.searchUsername(_p.username)) throw exception("Username does not exist");
+	if (!_usersManager.searchUsername(_p.username))
+	{
+		_connectionHandler.sendMessage(buildMsg(USERNAME_DOESNT_EXIST, "").c_str());
+		throw exception("Username does not exist");
+	}
 	_usersManager.getPassword(_p.username, passwordBuffer);
-	if (passwordBuffer != _p.password) throw exception("Incorrect password");
+	if (passwordBuffer != _p.password)
+	{
+		_connectionHandler.sendMessage(buildMsg(INCORRECT_PASSWORD, "").c_str());
+		throw exception("Incorrect password");
+	}
+	_connectionHandler.sendMessage(buildMsg(LOGIN_SUCCESSFUL, "").c_str());
 }
 void MessageHandler::signup()
 {
-	if (_usersManager.searchUsername(_p.username)) throw exception("Username already exists");
+	if (_usersManager.searchUsername(_p.username))
+	{
+		_connectionHandler.sendMessage(buildMsg(USERNAME_ALREADY_EXISTS, "").c_str());
+		throw exception("Username already exists");
+	}
 	_usersManager.addUser(_p.username, _p.password);
+	_connectionHandler.sendMessage(buildMsg(SIGN_UP_SUCCESSFUL, "").c_str());
 }
 
 void MessageHandler::getFile()

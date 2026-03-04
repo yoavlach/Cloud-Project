@@ -15,5 +15,7 @@ public:
 	Packet& parseMsg(const string& msg);
 private:
 	const string& getMsgPart(int& iterator, string& buffer, const string& msg);
+	void sendAll(const char* data, int length);
+	void receiveAll(char* buffer, int length);
 	SOCKET _socket;
 };
