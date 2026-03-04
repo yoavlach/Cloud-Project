@@ -38,7 +38,7 @@ void Client::connectToServer()
 }
 void Client::login()
 {
-    string username = "", password = "", msg = "";
+    string username = "", password = "";
     char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
     char* chMsg = nullptr;
     bool connected = false;
@@ -54,11 +54,8 @@ void Client::login()
             cin >> password;
             if (password.length() > 99)
                 throw exception("Username length must be lower than 100");
-            msg = to_string(LOGIN) + to_string(username.length()) + username + to_string(password.length()) + password;
-            _connectionHandler.sendMessage(msg.c_str());
-            chMsg = new char[msg.length()];
-            for (int i = 0; i < msg.length(); i++)
-                chMsg[i] = msg[i];
+            _connectionHandler.sendMessage(buildMsg(LOGIN, username, password, "").c_str());
+            chMsg = new char[MAX_SERVER_MESSAGE_LEN];
             _connectionHandler.receiveMessage(chMsg);
             _p = _connectionHandler.parseMsg(chMsg);
             delete[] chMsg;
