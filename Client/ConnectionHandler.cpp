@@ -72,7 +72,7 @@ const string& ConnectionHandler::getMsgPart(int& iterator, string& buffer, const
 {
 	string strPartLen = "";
 	int starterItVal = iterator, partLen = 0;
-	for (; iterator < starterItVal + USERNAME_AND_PASSWORD_LEN_SIZE; iterator++)
+	for (; iterator < starterItVal + SERVER_DATA_LEN_SIZE; iterator++)
 		strPartLen += msg[iterator];
 	partLen = stoi(strPartLen);
 	starterItVal = iterator;

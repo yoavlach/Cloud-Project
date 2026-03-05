@@ -156,6 +156,8 @@ void Client::sendFile()
                 _connectionHandler.receiveMessage(serverMsg);
                 _p = _connectionHandler.parseMsg(serverMsg);
                 processSuccessful = _p.msgCode == FILE_DATA_RECEIVED;
+                if (!processSuccessful)
+                    cerr << "Error occured" << endl;
             }
             catch (const exception& e)
             {
@@ -217,9 +219,13 @@ void Client::receiveFile()
     {
         _connectionHandler.receiveMessage(serverMsg);
         _p = _connectionHandler.parseMsg(serverMsg);
-        processSuccessful = _p.msgCode == FILE_DATA;
-        if(processSuccessful)
+        if (_p.msgCode == FILE_DATA)
+        {
+            _connectionHandler.sendMessage(buildMsg(FILE_DATA_RECEIVED, "", "", "").c_str());
             fileContent += _p.data;
+        }
+        else if (_p.msgCode != FINISHED_SENDING_FILE)
+            processSuccessful = false;
     }
     if(processSuccessful)
         f << fileContent;

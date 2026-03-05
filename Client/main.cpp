@@ -40,7 +40,7 @@ int main()
 			{
 				cout << "Choose action\n3) Send file\n4) Receive file\n5) Exit\nYour choice: ";
 				cin >> action;
-			} while (action > SEND_FILE_OPT || action > EXIT_OPT);
+			} while (action > EXIT_OPT || action < SEND_FILE_OPT);
 			switch (action)
 			{
 			case SEND_FILE_OPT:

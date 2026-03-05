@@ -46,7 +46,7 @@ void MessageHandler::signup()
 
 void MessageHandler::getFile()
 {
-	string currFileContent = "", currLine = "";
+	string currLine = "";
 	char* clientMsg = new char[MAX_CLIENT_MESSAGE_LEN];
 	ifstream f(_p.data.c_str());
 	bool processSuccessful = true;
@@ -59,12 +59,12 @@ void MessageHandler::getFile()
 	_connectionHandler.sendMessage(buildMsg(READY_TO_SEND_FILE, "").c_str());
 	while (getline(f, currLine) && processSuccessful)
 	{
-		if (currFileContent.length() + currLine.length() >= 999)
+		currLine += "\n";
+		if (currLine.length() <= 999)
 		{
-			currFileContent = "";
 			try
 			{
-				_connectionHandler.sendMessage(buildMsg(FILE_DATA, currFileContent).c_str());
+				_connectionHandler.sendMessage(buildMsg(FILE_DATA, currLine).c_str());
 				_connectionHandler.receiveMessage(clientMsg);
 				_p = parseMsg(clientMsg);
 				if (_p.msgCode != FILE_DATA_RECEIVED)
@@ -80,7 +80,6 @@ void MessageHandler::getFile()
 				_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 			}
 		}
-		currFileContent += currLine;
 	}
 	if (processSuccessful)
 	{
@@ -186,7 +185,7 @@ string MessageHandler::buildMsg(int msgCode, const string& data)
 
 string MessageHandler::formatLen(const string& len, int bytes)
 {
-	string formatted = "";
+	string formatted = len;
 	for (int i = 0; i < bytes - len.length(); i++)
 		formatted = '0' + formatted;
 	return formatted;
