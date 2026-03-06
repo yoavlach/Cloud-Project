@@ -1,4 +1,5 @@
 #include "Client.h"
+enum RECEIVE_FILES_OPTIONS { CREATE_NEW_FILE = 1, OVERWRITE_EXISTING};
 void Client::connectToServer()
 {
     WSADATA wsaData;
@@ -185,6 +186,7 @@ void Client::receiveFile()
     string fileName = "", fileContent = "", pathToSaveFile = "";
     char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
     bool processSuccessful = false;
+    int action = 0;
     ofstream f;
     do
     {
@@ -204,16 +206,35 @@ void Client::receiveFile()
             cout << e.what();
         }
     } while (!processSuccessful);
-
     do
     {
-        cout << "Enter the path where the file will be saved: ";
-        cin >> pathToSaveFile;
-        f.open(pathToSaveFile);
-        processSuccessful = f.good();
-        if (!processSuccessful)
-            cout << "Invalid file path\nPlease try again\n";
-    } while (!processSuccessful);
+        cout << "1) Create a new file\n2) Overwrite an existing file\nEnter your choice: ";
+        cin >> action;
+    } while (action != OVERWRITE_EXISTING && action != CREATE_NEW_FILE);
+    switch (action)
+    {
+    case OVERWRITE_EXISTING:
+        do
+        {
+            cout << "Enter the path where the file will be saved: ";
+            cin >> pathToSaveFile;
+            f.open(pathToSaveFile);
+            processSuccessful = f.good();
+            if (!processSuccessful)
+                cout << "Invalid file path\nPlease try again\n";
+        } while (!processSuccessful);
+        break;
+    case CREATE_NEW_FILE:
+        do
+        {
+            cout << "Enter the path for the new file: ";
+            cin >> pathToSaveFile;
+            f.open(pathToSaveFile + "\\" + fileName);
+            processSuccessful = f.good();
+            if (!processSuccessful)
+                cout << "Invalid file path\nPlease try again\n";
+        } while (!processSuccessful);
+    }
 
     while (_p.msgCode != FINISHED_SENDING_FILE && processSuccessful)
     {
@@ -230,6 +251,7 @@ void Client::receiveFile()
     if(processSuccessful)
         f << fileContent;
     delete[] serverMsg;
+    f.close();
 }
 
 string Client::extractFileName(const string& filePath)
