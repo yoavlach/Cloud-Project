@@ -37,10 +37,8 @@ void ConnectionHandler::receiveAll(char* buffer, int length)
         int bytesReceived = recv(_socket, buffer + totalReceived, length - totalReceived, 0);
         if (bytesReceived > 0)
             totalReceived += bytesReceived;
-        else if (bytesReceived == 0)
-            throw std::runtime_error("Connection gracefully closed by peer");
         else
-            throw std::runtime_error("Receive failed: " + std::to_string(WSAGetLastError()));
+            throw std::runtime_error("Connection closed by client");
     }
 }
 

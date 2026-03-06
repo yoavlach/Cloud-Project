@@ -88,7 +88,7 @@ void Server::clientHandler()
 		}
 		catch (const exception& e)
 		{
-			isConnected = e.what() != "Connection closed by client";
+			isConnected = (string)e.what() != "Connection closed by client";
 			cout << e.what() << endl;
 		}
 	}
