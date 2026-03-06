@@ -2,6 +2,7 @@
 #include <WinSock2.h>
 #include <Windows.h>
 #include <ws2tcpip.h>
+#include "Windows.h"
 #pragma comment(lib, "Ws2_32.lib")
 
 Server::Server()
@@ -11,6 +12,10 @@ Server::Server()
     if (result != 0)
         throw exception("WSAStartup failed with error: " + result);
     std::cout << "Winsock initialized." << std::endl;
+    DWORD dwAttrib = GetFileAttributesA("usersData");
+    BOOL dirExists = (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+    if (!dirExists)
+        CreateDirectoryA("usersData", NULL);
 }
 
 Server::~Server()
@@ -25,7 +30,8 @@ Server::~Server()
 void Server::waitForClient()
 {
     _socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (_socket == INVALID_SOCKET) {
+    if (_socket == INVALID_SOCKET) 
+    {
         WSACleanup();
         throw exception("Socket creation failed with error: " + WSAGetLastError());
     }

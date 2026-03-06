@@ -1,10 +1,5 @@
 #include "MessageHandler.h"
-
-MessageHandler::MessageHandler()
-{
-	_usersManager;
-	_p;
-}
+#include <Windows.h>
 
 void MessageHandler::setPacket(const Packet& p)
 {
@@ -32,9 +27,11 @@ void MessageHandler::login()
 		throw exception("Incorrect password");
 	}
 	_connectionHandler.sendMessage(buildMsg(LOGIN_SUCCESSFUL, "").c_str());
+	setConnectedUsername(_p.username);
 }
 void MessageHandler::signup()
 {
+	string dirPath = "usersData\\" + _p.username;
 	if (_usersManager.searchUsername(_p.username))
 	{
 		_connectionHandler.sendMessage(buildMsg(USERNAME_ALREADY_EXISTS, "").c_str());
@@ -42,14 +39,16 @@ void MessageHandler::signup()
 	}
 	_usersManager.addUser(_p.username, _p.password);
 	_connectionHandler.sendMessage(buildMsg(SIGN_UP_SUCCESSFUL, "").c_str());
+	CreateDirectoryA(dirPath.c_str(), NULL);
+	setConnectedUsername(_p.username);
 }
 
 void MessageHandler::getFile()
 {
-	string currLine = "";
+	string currLine = "", filePath = "usersData\\" + _connectedUsername + "\\" + _p.data;
 	char* clientMsg = new char[MAX_CLIENT_MESSAGE_LEN];
-	ifstream f(_p.data.c_str());
 	bool processSuccessful = true;
+	ifstream f(filePath.c_str());
 	if (!f.good())
 	{
 		_connectionHandler.sendMessage(buildMsg(FILE_DOES_NOT_EXIST, "").c_str());
@@ -98,11 +97,11 @@ void MessageHandler::getFile()
 
 void MessageHandler::sendFile()
 {
-	string fileContent = "";
+	string fileContent = "", filePath = "usersData\\" + _connectedUsername + "\\" + _p.data;
 	char* clientMessage = new char[MAX_CLIENT_MESSAGE_LEN];
 	bool processSuccessful = true;
 	_connectionHandler.sendMessage(buildMsg(READY_TO_RECEIVE_FILE, "").c_str());
-	ofstream f(_p.data.c_str());
+	ofstream f(filePath.c_str());
 	while (_p.msgCode != FINISHED_SENDING_FILE && processSuccessful)
 	{
 		_connectionHandler.receiveMessage(clientMessage);
@@ -128,9 +127,7 @@ Packet& MessageHandler::parseMsg(const string& msg)
 	Packet* p = new Packet;
 	int i = 0;
 	for (i = 0; i < MSG_CODE_LEN; i++)
-	{
 		msgCode += msg[i];
-	}
 	p->msgCode = stoi(msgCode);
 	getMsgPart(i, p->username, msg, USERNAME_AND_PASSWORD_LEN_SIZE);
 	getMsgPart(i, p->password, msg, USERNAME_AND_PASSWORD_LEN_SIZE);
@@ -143,15 +140,11 @@ string MessageHandler::getMsgPart(int& iterator, string& buffer, const string& m
 	string strPartLen = "";
 	int starterItVal = iterator, partLen = 0;
 	for (; iterator < starterItVal + lenSize; iterator++)
-	{
 		strPartLen += msg[iterator];
-	}
 	partLen = stoi(strPartLen);
 	starterItVal = iterator;
 	for (; iterator < starterItVal + partLen; iterator++)
-	{
 		buffer += msg[iterator];
-	}
 	return buffer;
 }
 
@@ -191,11 +184,8 @@ string MessageHandler::formatLen(const string& len, int bytes)
 	return formatted;
 }
 
-bool MessageHandler::checkFileExists(const string& fileName)
+
+void MessageHandler::setConnectedUsername(const string& connectedUsername)
 {
-	bool exists = true;
-	ifstream f(fileName);
-	exists = f.good();
-	f.close();
-	return exists;
+	_connectedUsername = connectedUsername;
 }
