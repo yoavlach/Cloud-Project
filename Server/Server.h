@@ -19,7 +19,6 @@ public:
 	void acceptClient();
 	void clientHandler();
 private:
-	string getMsgPart(int& iterator, string& buffer, const string& msg);
 	SOCKET _socket;
 	MessageHandler _messageHandler;
 	ConnectionHandler _connectionHandler;

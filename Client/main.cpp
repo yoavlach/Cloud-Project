@@ -3,7 +3,7 @@
 
 using namespace std;
 
-enum OPTIONS { LOGIN_OPT = 1, SIGNUP_OPT, SEND_FILE_OPT, RECEIVE_FILE_OPT, EXIT_OPT};
+enum OPTIONS { LOGIN_OPT = 1, SIGNUP_OPT, SEND_FILE_OPT, RECEIVE_FILE_OPT, GET_LIST_OF_FILES_OPT, EXIT_OPT};
 int main()
 {	
 	Client c;
@@ -38,7 +38,7 @@ int main()
 		{
 			do
 			{
-				cout << "Choose action\n3) Send file\n4) Receive file\n5) Exit\nYour choice: ";
+				cout << "Choose action\n3) Send file\n4) Receive file\n5) Get a list of your files\n6) Exit\nYour choice: ";
 				cin >> action;
 			} while (action > EXIT_OPT || action < SEND_FILE_OPT);
 			switch (action)
@@ -48,6 +48,9 @@ int main()
 				break;
 			case RECEIVE_FILE_OPT:
 				c.receiveFile();
+				break;
+			case GET_LIST_OF_FILES_OPT:
+				c.getListOfFiles();
 				break;
 			}
 		} while (action != EXIT_OPT);

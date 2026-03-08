@@ -25,6 +25,7 @@ public:
 	void signup();
 	void sendFile();
 	void receiveFile();
+	void getListOfFiles();
 private:
 	string extractFileName(const string& filePath);
 	string buildMsg(int msgCode, const string& username, const string& password, const string& data);

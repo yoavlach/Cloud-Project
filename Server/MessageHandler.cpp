@@ -121,6 +121,39 @@ void MessageHandler::sendFile()
 	delete[] clientMessage;
 }
 
+void MessageHandler::getListOfFiles()
+{
+    string path = "usersData\\" + _connectedUsername;
+	string listOfFiles = "", currFile = "";
+	char* clientMsg = new char[MAX_CLIENT_MESSAGE_LEN];
+	bool processSuccessful = true;
+	if (filesystem::is_empty(path))
+		_connectionHandler.sendMessage(buildMsg(FILES_LIST_EMPTY, "").c_str());
+	else
+	{
+		_connectionHandler.sendMessage(buildMsg(READY_TO_SEND_FILE, "").c_str());
+		for (const auto& entry : directory_iterator(path))
+		{
+			currFile = extractFileName(entry.path().string());
+			if (currFile.length() + listOfFiles.length() > 999)
+			{
+				processSuccessful = sendCurrFileContent(listOfFiles);
+				listOfFiles = "";
+			}
+			if (listOfFiles.length() > 0)
+				listOfFiles += "\n";
+			listOfFiles += currFile;
+		}
+		if (processSuccessful)
+		{
+			if (listOfFiles != "")
+				sendCurrFileContent(listOfFiles);
+			_connectionHandler.sendMessage(buildMsg(FINISHED_SENDING_FILE, "").c_str());
+		}
+	}
+	delete[] clientMsg;
+}
+
 Packet& MessageHandler::parseMsg(const string& msg)
 {
 	string msgCode = "";
@@ -165,6 +198,9 @@ void MessageHandler::callMsgProcessFunc(const string& msg)
 	case READY_TO_RECEIVE_FILE:
 		getFile();
 		break;
+	case GET_LIST_OF_FILES:
+		getListOfFiles();
+		break;
 	default:
 		_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
 		break;
@@ -182,6 +218,29 @@ string MessageHandler::formatLen(const string& len, int bytes)
 	for (int i = 0; i < bytes - len.length(); i++)
 		formatted = '0' + formatted;
 	return formatted;
+}
+
+bool MessageHandler::sendCurrFileContent(const string& currFileContent)
+{
+	bool processSuccessful = true;
+	char* clientMsg = new char[MAX_CLIENT_MESSAGE_LEN];
+	_connectionHandler.sendMessage(buildMsg(FILE_DATA, currFileContent).c_str());
+	_connectionHandler.receiveMessage(clientMsg);
+	_p = parseMsg(clientMsg);
+	if (_p.msgCode != FILE_DATA_RECEIVED)
+	{
+		_connectionHandler.sendMessage(buildMsg(GENERAL_INVALID_MESSAGE, "").c_str());
+		processSuccessful = false;
+	}
+	return processSuccessful;
+}
+
+string MessageHandler::extractFileName(const string& filePath)
+{
+	string fileName = "";
+	for (auto i : filePath)
+		fileName = (i == '/' || i == '\\') ? "" : fileName + i;
+	return fileName;
 }
 
 
