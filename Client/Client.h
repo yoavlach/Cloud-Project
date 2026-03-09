@@ -22,7 +22,7 @@ class Client
 public:
 	void connectToServer();
 	bool login(const string& username, const string& password, string& errMsgBuffer);
-	void signup();
+	bool signup(const string& username, const string& password, string& errMsgBuffer);
 	void sendFile();
 	void receiveFile();
 	void getListOfFiles();

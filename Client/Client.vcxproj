@@ -20,14 +20,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="SignUpPage.cpp" />
+    <ClCompile Include="LoginPage.cpp" />
     <ClCompile Include="MainFrame.cpp" />
     <ClInclude Include="App.h" />
+    <ClInclude Include="SignUpPage.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="ConnectionHandler.h" />
+    <ClInclude Include="Fonts.h" />
+    <ClInclude Include="LoginPage.h" />
     <ClInclude Include="MainFrame.h" />
     <ClInclude Include="Packet.h" />
     <ClCompile Include="Client.cpp" />
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConnectionHandler.cpp" />

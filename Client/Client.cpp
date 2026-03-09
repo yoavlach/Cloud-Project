@@ -71,42 +71,32 @@ bool Client::login(const string& username, const string& password, string& errMs
     delete[] serverMsg;
     return connected;
 }
-void Client::signup()
+bool Client::signup(const string& username, const string& password, string& errMsgBuffer)
 {
-    string username = "", password = "";
-    char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
-    char* chMsg = nullptr;
+    char* serverMsg = nullptr;
     bool connected = false;
-    do
+    try
     {
-        try
+        _connectionHandler.sendMessage(buildMsg(SIGNUP, username, password, "").c_str());
+        serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
+        _connectionHandler.receiveMessage(serverMsg);
+        _p = _connectionHandler.parseMsg(serverMsg);
+        delete[] serverMsg;
+        switch (_p.msgCode)
         {
-            cout << "Enter username: ";
-            cin >> username;
-            cout << "Enter password: ";
-            cin >> password;
-            _connectionHandler.sendMessage(buildMsg(SIGNUP, username, password, "").c_str());
-            chMsg = new char[MAX_SERVER_MESSAGE_LEN];
-            _connectionHandler.receiveMessage(chMsg);
-            _p = _connectionHandler.parseMsg(chMsg);
-            delete[] chMsg;
-            switch (_p.msgCode)
-            {
-            case USERNAME_ALREADY_EXISTS:
-                cout << "Username already exists\nPlease try again" << endl;
-                break;
-            case SIGN_UP_SUCCESSFUL:
-                cout << "Signup successful" << endl;
-                connected = true;
-                break;
-            }
+        case USERNAME_ALREADY_EXISTS:
+            errMsgBuffer = "Username already exists";
+            break;
+        case SIGN_UP_SUCCESSFUL:
+            connected = true;
+            break;
         }
-        catch (const exception& e)
-        {
-            cout << e.what() << endl;
-        }
-    } while (!connected);
-    delete[] serverMsg;
+    }
+    catch (const exception& e)
+    {
+        errMsgBuffer = e.what();
+    }
+    return connected;
 }
 void Client::sendFile()
 {
