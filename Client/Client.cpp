@@ -37,49 +37,39 @@ void Client::connectToServer()
         }
     }
 }
-void Client::login()
+bool Client::login(const string& username, const string& password, string& errMsgBuffer)
 {
-    string username = "", password = "";
     char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
-    char* chMsg = nullptr;
     bool connected = false;
-    do
+    try
     {
-        try
+        if (password.length() > 99 || username.length() > 99)
+            errMsgBuffer = "Username and password length must be lower than 100";
+        else
         {
-            cout << "Enter username: ";
-            cin >> username;
-            if (username.length() > 99)
-                throw exception("Username length must be lower than 100");
-            cout << "Enter password: ";
-            cin >> password;
-            if (password.length() > 99)
-                throw exception("Username length must be lower than 100");
             _connectionHandler.sendMessage(buildMsg(LOGIN, username, password, "").c_str());
-            chMsg = new char[MAX_SERVER_MESSAGE_LEN];
-            _connectionHandler.receiveMessage(chMsg);
-            _p = _connectionHandler.parseMsg(chMsg);
-            delete[] chMsg;
+            _connectionHandler.receiveMessage(serverMsg);
+            _p = _connectionHandler.parseMsg(serverMsg);
             switch (_p.msgCode)
             {
             case USER_DOESNT_EXIST:
-                cout << "User doesn't exist\nPlease try again" << endl;
+                errMsgBuffer = "User doesn't exist";
                 break;
             case INCORRECT_PASSWORD:
-                cout << "Incorrect password\nPlease try again" << endl;
+                errMsgBuffer = "Incorrect password";
                 break;
             case LOGIN_SUCCESSFUL:
-                cout << "Login successful" << endl;
                 connected = true;
                 break;
             }
         }
-        catch (const exception& e)
-        {
-            cout << e.what() << endl;
-        }
-    } while (!connected);
+    }
+    catch (const exception& e)
+    {
+        errMsgBuffer = e.what();
+    }
     delete[] serverMsg;
+    return connected;
 }
 void Client::signup()
 {

@@ -21,7 +21,7 @@ class Client
 {
 public:
 	void connectToServer();
-	void login();
+	bool login(const string& username, const string& password, string& errMsgBuffer);
 	void signup();
 	void sendFile();
 	void receiveFile();
