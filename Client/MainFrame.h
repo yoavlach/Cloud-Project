@@ -10,15 +10,17 @@ class MainFrame : public wxFrame
 {
 public:
 	MainFrame();
+	void switchToSignUpPage();
 private:
 	Client client;
-	LoginPage loginPage;
-	wxHyperlinkCtrl* signUpHyperLink;
+	LoginPage* loginPage;
+	SignUpPage* signupPage;
 
 	void bindEventHandlers();
 	void setUpSizers();
 
 	void onUserPressEnterInUsername(wxCommandEvent& evt);
 	void onUserEnterPassword(wxCommandEvent& evt);
+
 };
 

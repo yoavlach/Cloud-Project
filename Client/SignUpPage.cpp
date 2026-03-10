@@ -1,4 +1,5 @@
-#include "AuthPanel.h"
+#include "SignUpPage.h"
+#include "MainFrame.h"
 
 SignUpPage::SignUpPage()
 {
@@ -95,15 +96,14 @@ void SignUpPage::bindEventHandlers()
 	getUsernameInput()->Bind(wxEVT_TEXT_ENTER, &SignUpPage::onUserPressEnterInUsername, this);
 	getPasswordInput()->Bind(wxEVT_TEXT_ENTER, &SignUpPage::onUserEnterPassword, this);
 	getAuthenticateButton()->Bind(wxEVT_BUTTON, &SignUpPage::onUserEnterPassword, this);
-
 }
 
 void SignUpPage::setUpSizers()
 {
 
 	mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->AddStretchSpacer(1);
 	mainSizer->Add(logo, wxSizerFlags().CenterHorizontal());
-	mainSizer->AddSpacer(10);
 
 	usernamePasswordSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -116,6 +116,7 @@ void SignUpPage::setUpSizers()
 
 	mainSizer->AddSpacer(5);
 	mainSizer->Add(authenticateButton, wxSizerFlags().CenterHorizontal());
+	mainSizer->AddStretchSpacer(1);
 
 	wxGridSizer* outerSizer = new wxGridSizer(1);
 	outerSizer->Add(mainSizer, wxSizerFlags().Border(wxALL, 25).Expand().CenterVertical());
