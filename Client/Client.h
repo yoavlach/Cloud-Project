@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <math.h>
+#include <vector>
 #include "Packet.h"
 #include "ConnectionHandler.h"
 
@@ -25,7 +26,7 @@ public:
 	bool signup(const string& username, const string& password, string& errMsgBuffer);
 	void sendFile();
 	void receiveFile();
-	void getListOfFiles();
+	bool getListOfFiles(vector<string>& buffer, string& errMsgBuffer);
 private:
 	string extractFileName(const string& filePath);
 	string buildMsg(int msgCode, const string& username, const string& password, const string& data);

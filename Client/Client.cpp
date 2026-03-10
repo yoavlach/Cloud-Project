@@ -234,11 +234,8 @@ void Client::receiveFile()
     f.close();
 }
 
-void Client::getListOfFiles()
-{
-    string listOfFiles = "";
+bool Client::getListOfFiles(vector<string>& buffer, string& errMsgBuffer) {
     char* serverMsg = new char[MAX_SERVER_MESSAGE_LEN];
-    char saveFilesListInFile = ' ';
     bool processSuccessful = true;
     _connectionHandler.sendMessage(buildMsg(GET_LIST_OF_FILES, "", "", "").c_str());
     _connectionHandler.receiveMessage(serverMsg);
@@ -254,17 +251,21 @@ void Client::getListOfFiles()
             if (_p.msgCode == FILE_DATA)
             {
                 _connectionHandler.sendMessage(buildMsg(FILE_DATA_RECEIVED, "", "", "").c_str());
-                listOfFiles += _p.data;
+                buffer.push_back(_p.data);
             }
             else if (_p.msgCode != FINISHED_SENDING_FILE)
+            {
                 processSuccessful = false;
-        }
-        if (processSuccessful)
-        {
-            processSuccessful = false;
-            cout << "Your files:\n" << listOfFiles << endl;
+                errMsgBuffer = "Unexpected connection error";
+            }
         }
     }
+    else
+    {
+        processSuccessful = false;
+        errMsgBuffer = "Unexpected connection error";
+    }
+    return processSuccessful;
 }
 
 string Client::extractFileName(const string& filePath)
